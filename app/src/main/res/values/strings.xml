@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Organizze</string>
+    <string name="nome">Nome</string>
+    <string name="crie_sua_conta_gr_tis">Crie sua conta grátis</string>
+    <string name="email">Email</string>
+    <string name="entrar">Entrar</string>
+    <string name="senha">Senha</string>
+    <string name="cadastra_se">Cadastra-se</string>
+    <string name="termos_de_uso">Termos de uso</string>
+    <string name="acesse_sua_conta">Acesse sua conta</string>
+    <string name="title_activity_principal">PrincipalActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="carregando">Carregando...</string>
+    <string name="saldo_geral">saldo geral</string>
+    <string name="sair">Sair</string>
+</resources>
