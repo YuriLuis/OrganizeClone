@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.yuriluisgarciapereira.organizze.R;
 import com.yuriluisgarciapereira.organizze.config.ConfiguracaoFirebase;
+import com.yuriluisgarciapereira.organizze.helper.ValidaCamposApp;
 import com.yuriluisgarciapereira.organizze.model.Usuario;
 
 public class LoginActivity extends AppCompatActivity {
@@ -48,16 +49,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public boolean validaCampoLoginActitivy() {
-        if (inputTextEmail.getText().toString().isEmpty()) {
-            inputTextEmail.setError("Campo Obrigatório!");
+        String campoObrigatorio = "Campo Obrigatório!";
+        String email = inputTextEmail.getText().toString();
+        String senha = inputTextSenha.getText().toString();
+
+        if (ValidaCamposApp.campoEhVazio(email)) {
+            inputTextEmail.setError(campoObrigatorio);
             return false;
         }
 
-        if (inputTextSenha.getText().toString().isEmpty()) {
-            inputTextSenha.setError("Campo Obrigatório!");
+        if (ValidaCamposApp.campoEhVazio(senha)) {
+            inputTextSenha.setError(campoObrigatorio);
             return false;
         }
-
         return true;
     }
 

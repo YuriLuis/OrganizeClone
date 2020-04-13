@@ -8,7 +8,7 @@
     <string name="cadastra_se">Cadastra-se</string>
     <string name="termos_de_uso">Termos de uso</string>
     <string name="acesse_sua_conta">Acesse sua conta</string>
-    <string name="title_activity_principal">PrincipalActivity</string>
+    <string name="title_activity_principal">Principal</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
@@ -20,4 +20,9 @@
     <string name="carregando">Carregando...</string>
     <string name="saldo_geral">saldo geral</string>
     <string name="sair">Sair</string>
+    <string name="certezaExcluirMovimentacao">Você tem certeza que deseja realmente excluir a movimentação</string>
+    <string name="excluirMovimentacaoConta">Excluir Movimentação da Conta</string>
+    <string name="confirmar">Confirmar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="tituloAplicacao">Organizze</string>
 </resources>

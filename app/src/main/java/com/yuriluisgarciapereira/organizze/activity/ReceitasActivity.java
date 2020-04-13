@@ -20,6 +20,7 @@ import com.yuriluisgarciapereira.organizze.config.ConfiguracaoFirebase;
 import com.yuriluisgarciapereira.organizze.helper.Base64Custom;
 import com.yuriluisgarciapereira.organizze.helper.DateUtil;
 import com.yuriluisgarciapereira.organizze.helper.Mascaras;
+import com.yuriluisgarciapereira.organizze.helper.ValidaCamposApp;
 import com.yuriluisgarciapereira.organizze.model.Movimentacao;
 import com.yuriluisgarciapereira.organizze.model.Usuario;
 
@@ -118,30 +119,32 @@ public class ReceitasActivity extends AppCompatActivity {
 
     private Boolean validaCamposReceitaActivity() {
 
-        if (campoEhVazio(editTextValorReceita.getText().toString())) {
-            editTextValorReceita.setError("Campo Obrigatório!");
+        String campoObrigatorio = "Campo Obrigatório!";
+        String valorReceita = editTextValorReceita.getText().toString();
+        String dataEntradaReceita = textInputEditTextDataReceita.getText().toString();
+        String categoriaReceita = textInputEditTextCategoriaReceita.getText().toString();
+        String descricaoReceita = textInputEditTextDescricaoReceita.getText().toString();
+
+        if (ValidaCamposApp.campoEhVazio(valorReceita)) {
+            editTextValorReceita.setError(campoObrigatorio);
             return false;
         }
 
-        if (campoEhVazio(textInputEditTextDataReceita.getText().toString())) {
-            textInputEditTextDataReceita.setError("Campo Obrigatório!");
+        if (ValidaCamposApp.campoEhVazio(dataEntradaReceita)) {
+            textInputEditTextDataReceita.setError(campoObrigatorio);
             return false;
         }
 
-        if (campoEhVazio(textInputEditTextDescricaoReceita.getText().toString())) {
-            textInputEditTextDescricaoReceita.setError("Campo Obrigatório!");
+        if (ValidaCamposApp.campoEhVazio(categoriaReceita)) {
+            textInputEditTextCategoriaReceita.setError(campoObrigatorio);
             return false;
         }
 
-        if (campoEhVazio(textInputEditTextCategoriaReceita.getText().toString())) {
-            textInputEditTextCategoriaReceita.setError("Campo Obrigatório!");
+        if (ValidaCamposApp.campoEhVazio(descricaoReceita)) {
+            textInputEditTextDescricaoReceita.setError(campoObrigatorio);
             return false;
         }
         return true;
-    }
-
-    private boolean campoEhVazio(String campo){
-        return campo.isEmpty();
     }
 
     @Override

@@ -1,12 +1,15 @@
 package com.yuriluisgarciapereira.organizze.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -28,7 +32,6 @@ import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 import com.yuriluisgarciapereira.organizze.R;
 import com.yuriluisgarciapereira.organizze.adapter.AdapterMovimentacao;
 import com.yuriluisgarciapereira.organizze.config.ConfiguracaoFirebase;
-import com.yuriluisgarciapereira.organizze.helper.Base64Custom;
 import com.yuriluisgarciapereira.organizze.model.Movimentacao;
 import com.yuriluisgarciapereira.organizze.model.Usuario;
 
@@ -53,11 +56,11 @@ public class PrincipalActivity extends AppCompatActivity {
     private RecyclerView recyclerViewMovimentacoes;
     private String mesAnoSelecionado;
 
-
     private Double despesaTotal = 0.0;
     private Double receitaTotal = 0.0;
     private Double resumoUsuario = 0.0;
     private List<Movimentacao> movimentacoes = new ArrayList<>();
+    private Movimentacao movimentacao;
     private AdapterMovimentacao adapterMovimentacao;
 
     @Override
@@ -74,6 +77,13 @@ public class PrincipalActivity extends AppCompatActivity {
         recuperaMovimentacoes();
         recuperarValorSaldo();
         configuraRecyclerViewMovimentacoes();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        this.usuarioRef.removeEventListener(valueEventListenerUsuario);
+        this.movimentacoesReferencia.removeEventListener(valueEventListenerMovimentacoes);
     }
 
     @Override
@@ -96,9 +106,29 @@ public class PrincipalActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void atualizarSaldo(){
+
+        String idUsuario = ConfiguracaoFirebase.referenciaDoUsuario();
+
+        this.usuarioRef = databaseReference.child("usuarios").child(idUsuario);
+
+        if ( movimentacao.getTipo().equals("receita")){
+
+            receitaTotal = receitaTotal - movimentacao.getValor();
+            usuarioRef.child("receitaTotal").setValue(receitaTotal);
+        }
+
+        if (movimentacao.getTipo().equals("despesa")){
+
+            despesaTotal = despesaTotal - movimentacao.getValor();
+            usuarioRef.child("despesaTotal").setValue(despesaTotal);
+        }
+    }
+
     private void recuperaMovimentacoes() {
 
-        String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
+        String idUsuario = ConfiguracaoFirebase.referenciaDoUsuario();
+
         movimentacoesReferencia = databaseReference
                 .child("movimentacao")
                 .child(idUsuario)
@@ -111,6 +141,7 @@ public class PrincipalActivity extends AppCompatActivity {
                         movimentacoes.clear();
                         for (DataSnapshot dados : dataSnapshot.getChildren()) {
                             Movimentacao movimentacao = dados.getValue(Movimentacao.class);
+                            movimentacao.setId(dados.getKey());
                             movimentacoes.add(movimentacao);
                         }
                         adapterMovimentacao.notifyDataSetChanged();
@@ -125,7 +156,7 @@ public class PrincipalActivity extends AppCompatActivity {
 
     private void recuperarValorSaldo() {
 
-        String idUsuario = Base64Custom.codificarBase64(autenticacao.getCurrentUser().getEmail());
+        String idUsuario = ConfiguracaoFirebase.referenciaDoUsuario();
 
         this.usuarioRef = databaseReference.child("usuarios").child(idUsuario);
 
@@ -152,7 +183,73 @@ public class PrincipalActivity extends AppCompatActivity {
 
     }
 
+    private void swipe() {
+
+        ItemTouchHelper.Callback itemTouch = new ItemTouchHelper.Callback() {
+            @Override
+            public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+
+                int dragFlags = ItemTouchHelper.ACTION_STATE_IDLE; //Desabilita o dragAndDrop
+                int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+                return makeMovementFlags(dragFlags, swipeFlags);
+            }
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+                excluirMovimentacao(viewHolder);
+            }
+        };
+
+        new ItemTouchHelper(itemTouch).attachToRecyclerView(recyclerViewMovimentacoes);
+    }
+
+    private void excluirMovimentacao(@NonNull final RecyclerView.ViewHolder viewHolder) {
+
+        AlertDialog.Builder alertDialogExcluir = new AlertDialog.Builder(this)
+                .setTitle(R.string.excluirMovimentacaoConta)
+                .setMessage(getString(R.string.certezaExcluirMovimentacao) +
+                        "da sua conta??")
+                .setCancelable(false)
+                .setPositiveButton(R.string.confirmar, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        int position = viewHolder.getAdapterPosition();
+                        movimentacao = movimentacoes.get(position);
+
+                        String idUsuario = ConfiguracaoFirebase.referenciaDoUsuario();
+                        movimentacoesReferencia = databaseReference
+                                .child("movimentacao")
+                                .child(idUsuario)
+                                .child(mesAnoSelecionado);
+
+                        movimentacoesReferencia.child(movimentacao.getId()).removeValue();
+                        adapterMovimentacao.notifyItemRemoved(position);
+                        atualizarSaldo();
+                    }
+                })
+                .setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(PrincipalActivity.this,
+                                "Cancelado!", Toast.LENGTH_SHORT).show();
+                        adapterMovimentacao.notifyDataSetChanged();
+                    }
+                });
+
+        AlertDialog alert = alertDialogExcluir.create();
+        alert.show();
+
+    }
+
     private void configurarCalendarView() {
+
         final CharSequence meses[] = {"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
                 "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
         calendarViewMes.setTitleMonths(meses);
@@ -167,23 +264,28 @@ public class PrincipalActivity extends AppCompatActivity {
                 String mesSelecionado = "0" + date.getMonth();
                 mesAnoSelecionado = String.valueOf(mesSelecionado + "" + date.getYear());
                 Log.i("MES", "Mes " + mesSelecionado);
+
+                movimentacoesReferencia.removeEventListener(valueEventListenerMovimentacoes);
+                recuperaMovimentacoes();
             }
         });
     }
 
     private void iniciaToolbar() {
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle("Organizze");
+        toolbar.setTitle(R.string.tituloAplicacao);
     }
 
     public void instanciaLayoutComXml() {
+
         textViewNomeUsuario = findViewById(R.id.textViewNomeUsuario);
         textViewSaldoUsuario = findViewById(R.id.textViewSaldo);
         recyclerViewMovimentacoes = findViewById(R.id.recyclerViewMovimentacoes);
         calendarViewMes = findViewById(R.id.calendarViewMes);
         configurarCalendarView();
-
+        swipe();
     }
 
     public void adicionarDespesa(View view) {
@@ -204,13 +306,4 @@ public class PrincipalActivity extends AppCompatActivity {
         recyclerViewMovimentacoes.addItemDecoration(new DividerItemDecoration(getApplicationContext(), LinearLayout.VERTICAL));
         recyclerViewMovimentacoes.setAdapter(adapterMovimentacao);
     }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        this.usuarioRef.removeEventListener(valueEventListenerUsuario);
-        this.movimentacoesReferencia.removeEventListener(valueEventListenerMovimentacoes);
-    }
-
 }

@@ -13,6 +13,7 @@ public class Movimentacao {
     private String descricao;
     private String tipo;
     private double valor;
+    private String id;
 
     public Movimentacao(){
 
@@ -21,8 +22,8 @@ public class Movimentacao {
     public void salvarMovimentacaoFirebase(String dataEscolhida){
         FirebaseAuth firebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
 
-        String idUusuario = Base64Custom.codificarBase64( firebaseAuth.getCurrentUser().getEmail() );
-        String mesAno = DateUtil.mesAnoDataEscolhida(data);
+        String idUusuario = ConfiguracaoFirebase.referenciaDoUsuario();
+        String mesAno = DateUtil.mesAnoDataEscolhida(dataEscolhida);
 
         DatabaseReference databaseReference = ConfiguracaoFirebase.getFirebaseDataBase();
         databaseReference.child("movimentacao")
@@ -70,5 +71,13 @@ public class Movimentacao {
 
     public void setValor(double valor) {
         this.valor = valor;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

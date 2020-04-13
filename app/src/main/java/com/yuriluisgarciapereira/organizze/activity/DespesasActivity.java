@@ -18,6 +18,7 @@ import com.yuriluisgarciapereira.organizze.config.ConfiguracaoFirebase;
 import com.yuriluisgarciapereira.organizze.helper.Base64Custom;
 import com.yuriluisgarciapereira.organizze.helper.DateUtil;
 import com.yuriluisgarciapereira.organizze.helper.Mascaras;
+import com.yuriluisgarciapereira.organizze.helper.ValidaCamposApp;
 import com.yuriluisgarciapereira.organizze.model.Movimentacao;
 import com.yuriluisgarciapereira.organizze.model.Usuario;
 
@@ -66,7 +67,7 @@ public class DespesasActivity extends AppCompatActivity {
 
     public void salvarDespesa(View view){
 
-        if (validaCamposDespesasActivity()){
+        if (validaCamposDespesaActivity()){
             String data = textInputEditTextDataDespesa.getText().toString();
             Double valorRecuperado = Double.parseDouble(editTextValorDespesa.getText().toString());
 
@@ -112,28 +113,33 @@ public class DespesasActivity extends AppCompatActivity {
         usuarioRef.child("despesaTotal").setValue(despesa);
     }
 
-    private Boolean validaCamposDespesasActivity(){
+        private Boolean validaCamposDespesaActivity() {
+            String campoObrigatorio = "Campo Obrigatório!";
+            String valorDespesa = editTextValorDespesa.getText().toString();
+            String dataEntradaDespesa = textInputEditTextDataDespesa.getText().toString();
+            String categoriaDespesa = textInputEditTextCategoriaDespesa.getText().toString();
+            String descricaoDespesa = textInputEditTextDescricaoDespesa.getText().toString();
 
-        if (editTextValorDespesa.getText().toString().isEmpty()){
-            editTextValorDespesa.setError("Campo Obrigatório!");
-            return false;
-        }
+            if (ValidaCamposApp.campoEhVazio(valorDespesa)) {
+                editTextValorDespesa.setError(campoObrigatorio);
+                return false;
+            }
 
-        if (textInputEditTextDataDespesa.getText().toString().isEmpty()){
-            textInputEditTextDataDespesa.setError("Campo Obrigatório!");
-            return false;
-        }
+            if (ValidaCamposApp.campoEhVazio(dataEntradaDespesa)) {
+                textInputEditTextDataDespesa.setError(campoObrigatorio);
+                return false;
+            }
 
-        if (textInputEditTextDescricaoDespesa.getText().toString().isEmpty()){
-            textInputEditTextDescricaoDespesa.setError("Campo Obrigatório!");
-            return false;
-        }
+            if (ValidaCamposApp.campoEhVazio(categoriaDespesa)) {
+                textInputEditTextCategoriaDespesa.setError(campoObrigatorio);
+                return false;
+            }
 
-        if (textInputEditTextCategoriaDespesa.getText().toString().isEmpty()){
-            textInputEditTextCategoriaDespesa.setError("Campo Obrigatório!");
-            return false;
-        }
-        return true;
+            if (ValidaCamposApp.campoEhVazio(descricaoDespesa)) {
+                textInputEditTextDescricaoDespesa.setError(campoObrigatorio);
+                return false;
+            }
+            return true;
     }
 
     @Override
