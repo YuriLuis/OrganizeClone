@@ -171,8 +171,8 @@ public class PrincipalActivity extends AppCompatActivity {
                 DecimalFormat decimalFormat = new DecimalFormat("0.##");
                 String resumoFormatado = decimalFormat.format(resumoUsuario);
 
-                textViewNomeUsuario.setText("Olá, " + usuario.getNome());
-                textViewSaldoUsuario.setText("R$: " + resumoFormatado);
+                textViewNomeUsuario.setText(getString(R.string.ola) + usuario.getNome());
+                textViewSaldoUsuario.setText(getString(R.string.real) + resumoFormatado);
             }
 
             @Override

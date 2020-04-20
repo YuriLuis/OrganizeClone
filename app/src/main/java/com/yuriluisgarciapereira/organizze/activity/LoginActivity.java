@@ -16,8 +16,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.yuriluisgarciapereira.organizze.R;
 import com.yuriluisgarciapereira.organizze.config.ConfiguracaoFirebase;
 import com.yuriluisgarciapereira.organizze.helper.ValidaCamposApp;
@@ -48,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         buttonLogar = findViewById(R.id.buttonLogarUsuario);
     }
 
-    public boolean validaCampoLoginActitivy() {
+    public boolean camposNaoInvalido() {
         String campoObrigatorio = "Campo Obrigatório!";
         String email = inputTextEmail.getText().toString();
         String senha = inputTextSenha.getText().toString();
@@ -71,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = inputTextEmail.getText().toString();
                 String senha = inputTextSenha.getText().toString();
-                if (validaCampoLoginActitivy()) {
+                if (camposNaoInvalido()) {
                     usuario = new Usuario();
                     usuario.setEmail(email);
                     usuario.setSenha(senha);

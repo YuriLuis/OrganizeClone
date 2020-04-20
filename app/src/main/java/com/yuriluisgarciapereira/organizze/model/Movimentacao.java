@@ -1,9 +1,7 @@
 package com.yuriluisgarciapereira.organizze.model;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.yuriluisgarciapereira.organizze.config.ConfiguracaoFirebase;
-import com.yuriluisgarciapereira.organizze.helper.Base64Custom;
 import com.yuriluisgarciapereira.organizze.helper.DateUtil;
 
 public class Movimentacao {
@@ -20,14 +18,13 @@ public class Movimentacao {
     }
 
     public void salvarMovimentacaoFirebase(String dataEscolhida){
-        FirebaseAuth firebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
 
-        String idUusuario = ConfiguracaoFirebase.referenciaDoUsuario();
+        String idUsuario = ConfiguracaoFirebase.referenciaDoUsuario();
         String mesAno = DateUtil.mesAnoDataEscolhida(dataEscolhida);
 
         DatabaseReference databaseReference = ConfiguracaoFirebase.getFirebaseDataBase();
         databaseReference.child("movimentacao")
-                .child( idUusuario )
+                .child( idUsuario )
                 .child( mesAno )
                 .push()
                 .setValue(this);

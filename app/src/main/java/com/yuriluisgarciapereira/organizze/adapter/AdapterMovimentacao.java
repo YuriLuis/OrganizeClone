@@ -29,7 +29,6 @@ public class AdapterMovimentacao extends RecyclerView.Adapter<AdapterMovimentaca
         return new MyViewHolder(itemLista);
     }
 
-
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Movimentacao movimentacao = movimentacoes.get(position);
@@ -44,7 +43,6 @@ public class AdapterMovimentacao extends RecyclerView.Adapter<AdapterMovimentaca
             holder.valor.setText("-" + movimentacao.getValor());
         }
     }
-
 
     @Override
     public int getItemCount() {
@@ -62,7 +60,5 @@ public class AdapterMovimentacao extends RecyclerView.Adapter<AdapterMovimentaca
             valor = itemView.findViewById(R.id.textAdapterValor);
             categoria = itemView.findViewById(R.id.textAdapterCategoria);
         }
-
     }
-
 }

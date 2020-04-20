@@ -25,4 +25,6 @@
     <string name="confirmar">Confirmar</string>
     <string name="cancelar">Cancelar</string>
     <string name="tituloAplicacao">Organizze</string>
+    <string name="ola">\"Olá, \"</string>
+    <string name="real">\"R$: \"</string>
 </resources>

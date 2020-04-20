@@ -60,7 +60,7 @@ public class CadastroActivity extends AppCompatActivity {
                 String email = inputTextEmail.getText().toString();
                 String senha = inputTextSenha.getText().toString();
 
-                if (validaCampoCadastroUsuarioActivity()) {
+                if (camposNaoInvalidos()) {
                     usuario = new Usuario();
                     usuario.setNome(nome);
                     usuario.setEmail(email);
@@ -71,7 +71,7 @@ public class CadastroActivity extends AppCompatActivity {
         });
     }
 
-    private boolean validaCampoCadastroUsuarioActivity() {
+    private boolean camposNaoInvalidos() {
 
         String campoObrigatorio = "Campo Obrigatório!";
         String nome = inputTextNome.getText().toString();

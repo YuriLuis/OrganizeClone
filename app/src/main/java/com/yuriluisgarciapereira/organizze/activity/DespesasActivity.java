@@ -88,7 +88,7 @@ public class DespesasActivity extends AppCompatActivity {
 
     private void recuperarDespesaTotal(){
 
-        String idUsuario = Base64Custom.codificarBase64(firebaseAuth.getCurrentUser().getEmail());
+        String idUsuario = ConfiguracaoFirebase.referenciaDoUsuario();
         this.usuarioRef = databaseReference.child("usuarios").child(idUsuario);
 
        valueEventListenerUsuario =  usuarioRef.addValueEventListener(new ValueEventListener() {
@@ -107,7 +107,7 @@ public class DespesasActivity extends AppCompatActivity {
 
     private void atualizarDespesa(Double despesa){
 
-        String idUsuario = Base64Custom.codificarBase64(firebaseAuth.getCurrentUser().getEmail());
+        String idUsuario = ConfiguracaoFirebase.referenciaDoUsuario();
         DatabaseReference usuarioRef = databaseReference.child("usuarios").child(idUsuario);
 
         usuarioRef.child("despesaTotal").setValue(despesa);

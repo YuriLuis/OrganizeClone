@@ -33,7 +33,6 @@ public class ReceitasActivity extends AppCompatActivity {
     //Back-End
     private Movimentacao movimentacao;
     private DatabaseReference databaseReference = ConfiguracaoFirebase.getFirebaseDataBase();
-    private FirebaseAuth firebaseAuth = ConfiguracaoFirebase.getFirebaseAutenticacao();
     private Double receitaTotal;
     private DatabaseReference usuarioRef;
     private ValueEventListener valueEventListenerUsuario;
@@ -92,7 +91,7 @@ public class ReceitasActivity extends AppCompatActivity {
 
     private void atualizarReceita(Double receita){
 
-        String idUsuario = Base64Custom.codificarBase64(firebaseAuth.getCurrentUser().getEmail());
+        String idUsuario = ConfiguracaoFirebase.referenciaDoUsuario();
         DatabaseReference usuarioRef = databaseReference.child("usuarios").child(idUsuario);
 
         usuarioRef.child("receitaTotal").setValue(receita);
@@ -100,7 +99,7 @@ public class ReceitasActivity extends AppCompatActivity {
 
     private void recuperarReceitaTotal(){
 
-        String idUsuario = Base64Custom.codificarBase64(firebaseAuth.getCurrentUser().getEmail());
+        String idUsuario = ConfiguracaoFirebase.referenciaDoUsuario();
         this.usuarioRef = databaseReference.child("usuarios").child(idUsuario);
 
         valueEventListenerUsuario = usuarioRef.addValueEventListener(new ValueEventListener() {
